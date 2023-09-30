@@ -9,6 +9,7 @@ class Program
     static void Main(string[] args)
     {
         Journal journal = new Journal();
+        PromptGenerator promptGenerator = new PromptGenerator();
         bool exit = false;
 
         while (!exit)
@@ -26,10 +27,10 @@ class Program
             switch (choice)
             {
                 case "1":
+                    string prompt = promptGenerator.GeneratePrompt();
+                    Console.WriteLine($"Prompt: {prompt}");
                     Console.Write("Enter your response: ");
                     string response = Console.ReadLine();
-                    Console.Write("Enter the prompt: ");
-                    string prompt = Console.ReadLine();
                     Entry newEntry = new Entry(DateTime.Now, prompt, response);
                     journal.AddEntry(newEntry);
                     break;
