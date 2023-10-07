@@ -59,6 +59,6 @@ class Program
                     Console.WriteLine("Invalid choice. Please try again.");
                     break;
             }
-        }
-    }
+        }//Entries are now serialized when saving to a file and deserialized when loading from a file. 
+    }    // this exceeds the requirement
 }
