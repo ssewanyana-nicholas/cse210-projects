@@ -9,42 +9,77 @@ class Journal
 
     public void DisplayEntries()
     {
-        Console.WriteLine("Journal Entries:");
+        Console.WriteLine("\nJournal Entries:\n");
         foreach (var entry in entries)
         {
-            Console.WriteLine(entry.FormatEntry());
+            Console.WriteLine($"Date: {entry.Date}");
+            Console.WriteLine($"Prompt: {entry.Prompt}");
+            Console.WriteLine($"Response: {entry.Response}\n");
         }
     }
 
-    public void SaveToFile(string filename)
+    public void SaveToCsvFile(string filename)
     {
         using (StreamWriter writer = new StreamWriter(filename))
         {
+            // Write the CSV header
+            writer.WriteLine("Date, Prompt, Response");
+
             foreach (var entry in entries)
             {
-                string serializedEntry = entry.SerializeEntry();
-                writer.WriteLine(serializedEntry);
+                // Format the entry as a CSV line
+                string csvLine = $"{entry.Date:yyyy-MM-dd HH:mm:ss}, \"{EscapeCsvValue(entry.Prompt)}\", \"{EscapeCsvValue(entry.Response)}\"";
+                writer.WriteLine(csvLine);
             }
         }
-        Console.WriteLine($"Saved journal to {filename}");
+        Console.WriteLine("Journal saved to CSV file.");
     }
 
-    public void LoadFromFile(string filename)
+    public void LoadFromCsvFile(string filename)
     {
-        List<Entry> loadedEntries = new List<Entry>();
-        using (StreamReader reader = new StreamReader(filename))
+        if (File.Exists(filename))
         {
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            entries.Clear();
+            using (StreamReader reader = new StreamReader(filename))
             {
-                Entry entry = Entry.DeserializeEntry(line);
-                if (entry != null)
+                // Skip the header line
+                reader.ReadLine();
+
+                while (!reader.EndOfStream)
                 {
-                    loadedEntries.Add(entry);
+                    string line = reader.ReadLine();
+                    string[] parts = line.Split(',');
+
+                    if (parts.Length == 3)
+                    {
+                        DateTime date;
+                        if (DateTime.TryParse(parts[0], out date))
+                        {
+                            string prompt = UnescapeCsvValue(parts[1].Trim());
+                            string response = UnescapeCsvValue(parts[2].Trim());
+                            Entry entry = new Entry(date, prompt, response);
+                            entries.Add(entry);
+                        }
+                    }
                 }
             }
+            Console.WriteLine("Journal loaded from CSV file.");
         }
-        entries = loadedEntries;
-        Console.WriteLine($"Loaded journal from {filename}");
+        else
+        {
+            Console.WriteLine("File not found. Journal not loaded.");
+        }
+    }
+
+    private string EscapeCsvValue(string value)
+    {
+        // Escape double quotes by doubling them
+        return value.Replace("\"", "\"\"");
+    }
+
+    private string UnescapeCsvValue(string value)
+    {
+        // Unescape doubled double quotes
+        return value.Replace("\"\"", "\"");
     }
 }

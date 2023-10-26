@@ -1,18 +1,18 @@
 class PromptGenerator
 {
-    private List<string> prompts = new List<string>
-    {
-        "Who was the most interesting person I interacted with today?",
-        "What was the best part of my day?",
-        "How did I see the hand of the Lord in my life today?",
-        "What was the strongest emotion I felt today?",
-        "If I had one thing I could do over today, what would it be?"
+    private string[] prompts = {
+        "What's the most interesting thing that happened today?",
+        "Write about a challenge you faced and how you overcame it.",
+        "Describe a person who had a positive impact on your day.",
+        "What are you grateful for today?",
+        "Write about a goal you want to achieve and how you plan to get there."
     };
+
+    private Random random = new Random();
 
     public string GeneratePrompt()
     {
-        Random random = new Random();
-        int index = random.Next(prompts.Count);
+        int index = random.Next(prompts.Length);
         return prompts[index];
     }
 }
