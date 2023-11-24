@@ -1,0 +1,4 @@
+1200
+SimpleGoal|temple|going to the temple|100|true
+EternalGoal|money|makong money|100|
+ChecklistGoal|fish|eating fish every day|100|500|3|3|true
