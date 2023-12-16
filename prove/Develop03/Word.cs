@@ -1,6 +1,6 @@
 class Word
 {
-    public string Text { get; private set; }
+    private string Text { get; set; }
     public bool Hidden { get; private set; }
 
     public Word(string text)
@@ -12,5 +12,15 @@ class Word
     public void Hide()
     {
         Hidden = true;
+    }
+
+    public string Display()
+    {
+        return Hidden ? new string('_', Text.Length) : Text;
+    }
+
+    public string GetText()
+    {
+        return Text;
     }
 }

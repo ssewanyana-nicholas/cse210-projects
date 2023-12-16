@@ -8,42 +8,29 @@ class ScriptureMemorizer
     public ScriptureMemorizer(Scripture scripture)
     {
         this.scripture = scripture;
-        this.words = scripture.Text.Split(' ').Select(word => new Word(word)).ToList();
+        this.words = scripture.GetText().Split(' ').Select(word => new Word(word)).ToList();
     }
 
     public string GetFullScripture()
     {
-        return $"{scripture.Reference} {string.Join(" ", words.Select(w => w.Text))}";
+        return $"{scripture.Reference} {string.Join(" ", words.Select(w => w.GetText()))}";
     }
 
     public string GetHiddenScripture()
     {
-        return $"{scripture.Reference} {string.Join(" ", words.Select(w => w.Hidden ? "_____" : w.Text))}";
+        return $"{scripture.Reference} {string.Join(" ", words.Select(w => w.Display()))}";
     }
 
     public void HideRandomWord(Random random)
     {
-        int visibleWords = words.Count(w => !w.Hidden);
-        if (visibleWords == 0)
+        var visibleWords = words.Where(w => !w.Hidden).ToList();
+        if (visibleWords.Count == 0)
         {
             // No words left to hide
             return;
         }
 
-        int randomIndex = random.Next(visibleWords);
-        int countHidden = 0;
-
-        for (int i = 0; i < words.Count; i++)
-        {
-            if (!words[i].Hidden)
-            {
-                if (countHidden == randomIndex)
-                {
-                    words[i].Hide();
-                    break;
-                }
-                countHidden++;
-            }
-        }
+        int randomIndex = random.Next(visibleWords.Count);
+        visibleWords[randomIndex].Hide();
     }
 }
